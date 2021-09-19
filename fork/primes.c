@@ -54,6 +54,7 @@ main(int argc, char *argv[])
 						writeFd = selectWriteFd( fds );
 					} else { // CHILD
 						firstRead=true;
+						close(readFd);
 						readFd = selectReadFd( fds );
 						continue;
 					}
