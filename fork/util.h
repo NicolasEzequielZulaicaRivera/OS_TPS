@@ -2,7 +2,11 @@
 #define TP_FORK_UTIL_H
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
+#include <stdbool.h>
+#include <sys/wait.h>
 
 int
 _fork(void);

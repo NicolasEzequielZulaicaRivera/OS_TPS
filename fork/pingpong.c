@@ -1,6 +1,5 @@
 
 #include "util.h"
-#include <stdlib.h>
 #include <time.h>
 
 int
