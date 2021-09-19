@@ -37,10 +37,10 @@ main()
 		printf( "  - getppid me devuelve: %d \n", getppid() );
 		printf( "  - recibo el valor %d a travez de fd=%d \n", msg, readFd );
 		printf( "  - reenvio el valor en fd=%d \n", writeFd );
+		printf("\n");
 		
 		_write( writeFd, &msg, sizeof(msg) );
 
-		printf("\n");
 		
 	} else {
 		/// PARENT ------------------------- PARENT
@@ -54,10 +54,10 @@ main()
 		printf( "  - getppid me devuelve: %d \n", getppid() );
 		printf( "  - random me devuelve: %d \n", msg );
 		printf( "  - envio el valor %d a travez de fd=%d \n", msg, writeFd );
+		printf("\n");
 
 		_write( writeFd, &msg, sizeof(msg) );
 		
-		printf("\n");
 
 		_read( readFd, &msg, sizeof(msg) );
 
