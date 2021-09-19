@@ -1,6 +1,9 @@
 #ifndef TP_FORK_UTIL_H
 #define TP_FORK_UTIL_H
 
+#include <stdio.h>
+#include <unistd.h>
+
 int
 _fork(void);
 
