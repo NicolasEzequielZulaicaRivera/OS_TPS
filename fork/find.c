@@ -30,6 +30,9 @@ void findInDir( int dirFd, string path, string searchTerm, strSearchFunc searchF
 			strcat( newPath, entry->d_name );
 			strcat( newPath, "/" );
 
+			if( searchFunc( entry->d_name, searchTerm ) )
+				printf("%s%s\n", path, entry->d_name);
+
 			int fd = openat( dirFd, entry->d_name, O_DIRECTORY );
 
 			if( fd < 0 ){
