@@ -5,6 +5,8 @@
 #define NARGS 4
 #endif
 
+const int STRING_SIZE = 60;
+
 int
 main(int argc, char *argv[])
 {
@@ -14,10 +16,10 @@ main(int argc, char *argv[])
 		_exit(-1);
 	}
 
-	const maxnargs = NARGS+2;
+	const int maxnargs = NARGS+2;
 
 	char **args= malloc(sizeof(char*) * (maxnargs));
-	for( int i=0; i<maxnargs-1; i++ ) args[i]= malloc(sizeof(char));
+	for( int i=0; i<maxnargs-1; i++ ) args[i]= malloc(sizeof(char)*STRING_SIZE);
 	strcpy(args[0],argv[1]);
 	args[maxnargs]=NULL;
 
@@ -26,7 +28,6 @@ main(int argc, char *argv[])
 	char* line = NULL;
 	size_t size;
 
-	int j=1;
 
 	while( getline(&line, &size, stdin ) != -1 ){
 		
