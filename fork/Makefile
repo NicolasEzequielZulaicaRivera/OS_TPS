@@ -13,7 +13,7 @@ xargs: util.o xargs.o
 primes: util.o primes.o
 pingpong: util.o pingpong.o
 
-ps: ps.o
+ps: util.o ps.o
 timeout: timeout.o
 
 format: .clang-files .clang-format
