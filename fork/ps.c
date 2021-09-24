@@ -42,4 +42,5 @@ main()
     }
 
     closedir( procs );
+    _exit(0);
 }
