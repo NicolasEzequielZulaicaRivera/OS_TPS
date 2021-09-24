@@ -14,7 +14,7 @@ primes: util.o primes.o
 pingpong: util.o pingpong.o
 
 ps: util.o ps.o
-timeout: timeout.o
+timeout: util.o timeout.o
 
 format: .clang-files .clang-format
 	xargs -r clang-format -i <$<
