@@ -92,5 +92,5 @@ main(int argc, char *argv[])
     // PADRE : Espera a que el hijo termine ( incluido haberlo terminado )
     wait(NULL);
 
-    return 0;
+    _exit(0);
 }
