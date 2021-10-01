@@ -3,6 +3,8 @@ find
 pingpong
 primes
 xargs
-*.json
+ps
+timeout
 
+*.json
 .vscode
