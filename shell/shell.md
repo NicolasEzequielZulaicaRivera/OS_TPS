@@ -13,7 +13,7 @@ Los wrappers de la funcion execve proporcionan las siguientes funcionalidades:
 
 #### ¿Puede la llamada a exec(3) fallar? ¿Cómo se comporta la implementación de la shell en ese caso?
 
-Si, la implementacion llama a `_exit`, finalizando
+Si. La implementacion llama a `_exit`, finalizando el proceso hijo si falla en ejecutar el comando.
 
 ---
 
@@ -26,6 +26,10 @@ Si, la implementacion llama a `_exit`, finalizando
 ---
 
 ### Procesos en segundo plano
+
+#### Detallar cuál es el mecanismo utilizado para implementar procesos en segundo plano.
+
+El proceso principal espera al proceso que ejecuta el comando con el flag `WNOHANG`, de modo que no interrumpe a la shell.
 
 ---
 
