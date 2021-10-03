@@ -92,13 +92,15 @@ exec_cmd(struct cmd *cmd)
 		e = (struct execcmd *)cmd;
 		//execvpe( e->argv[0], e->argv, e->eargv);
 		execvp( e->argv[0], e->argv);
+		printf_debug("Command not found\n");
 		_exit(-1);
 
 	case BACK: {
 		// runs a command in background
 		//
 		// Your code here
-		printf("Background process are not yet implemented\n");
+		execvp( e->argv[0], e->argv);
+		printf_debug("Command not found\n");
 		_exit(-1);
 		break;
 	}
