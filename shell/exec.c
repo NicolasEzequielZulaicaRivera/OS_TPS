@@ -89,9 +89,10 @@ exec_cmd(struct cmd *cmd)
 		// spawns a command
 		//
 		// Your code here
-		printf("Commands are not yet implemented\n");
+		e = (struct execcmd *)cmd;
+		//execvpe( e->argv[0], e->argv, e->eargv);
+		execvp( e->argv[0], e->argv);
 		_exit(-1);
-		break;
 
 	case BACK: {
 		// runs a command in background
