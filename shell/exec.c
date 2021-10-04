@@ -99,15 +99,18 @@ exec_cmd(struct cmd *cmd)
 		//execvpe( e->argv[0], e->argv, e->eargv);
 		execvp( e->argv[0], e->argv);
 		printf_debug("Command not found\n");
+		fflush(stdout);
 		_exit(-1);
 
 	case BACK: {
 		// runs a command in background
 		//
 		// Your code here
-		b = (struct execcmd *)cmd;
+		b = (struct backcmd *)cmd;
+		e = (struct execcmd *)b->c;
 		execvp( e->argv[0], e->argv);
 		printf_debug("Command not found\n");
+		fflush(stdout);
 		_exit(-1);
 		break;
 	}
