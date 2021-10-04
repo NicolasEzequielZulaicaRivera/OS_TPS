@@ -163,12 +163,35 @@ exec_cmd(struct cmd *cmd)
 		// pipes two commands
 		//
 		// Your code here
-		printf("Pipes are not yet implemented\n");
+		p = (struct pipecmd *)cmd;
+		int fds [2];
+		if( pipe(fds)<0 ) _exit(-1);
+
+		if( !_fork() ){ // LEFT CHILD
+			dup2(fds[1],1);
+			close( fds[0] );close( fds[1] );
+			e = (struct execcmd *)p->leftcmd;
+			exec_cmd(e);
+			_exit(-1);
+		}
+		
+		if( !_fork() ){ // RIGHT CHILD
+			dup2(fds[0],0);
+			close( fds[0] );close( fds[1] );
+			e = (struct execcmd *)p->rightcmd;
+			exec_cmd(e);
+			_exit(-1);
+		}
+
+		close( fds[0] );close( fds[1] );
+
+		wait(NULL);
+		wait(NULL);
 
 		// free the memory allocated
 		// for the pipe tree structure
 		free_command(parsed_pipe);
-
+		_exit(0);
 		break;
 	}
 	}
