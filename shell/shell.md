@@ -53,7 +53,33 @@ Si cambiamos el orden redirije el stderr al stdout original ( antes de cambiarlo
 
 ---
 
-### Tuberías simples (pipes)
+### Tuberías múltiples
+
+#### Investigar qué ocurre con el exit code reportado por la shell si se ejecuta un pipe ¿Cambia en algo? ¿Qué ocurre si, en un pipe, alguno de los comandos falla? Mostrar evidencia (e.g. salidas de terminal) de este comportamiento usando bash. Comparar con la implementación del este lab.
+
+La shell reporta el exit code del ultimo comando en un pipeline, se puede acceder a los exit codes de los procesos en el ultimo pipeline mediante la variable de entorno `$pipestatus`
+
+**zsh:**
+```
+➜  ~ cat noexiste ; echo $?
+cat: noexiste: No such file or directory
+1
+➜  ~ cat noexiste | echo hello ; echo $?
+hello
+cat: noexiste: No such file or directory
+0
+➜  ~ cat noexiste | echo hello ; echo $pipestatus
+hello
+cat: noexiste: No such file or directory
+1 0 
+```
+
+**fiuba shell:**
+
+[//]: # (TODO)
+
+- variables de entorno sin implementar
+- no se guarda el exit_satus de los sub procesos
 
 ---
 
