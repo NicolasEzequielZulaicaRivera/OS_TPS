@@ -61,3 +61,14 @@ fprintf_debug(FILE* file, char* format, ...) {
     return 0;
 #endif
 }
+
+int
+_fork(void){
+    int res = fork();
+    
+    if( res<0 ){
+        printf_debug("\n > Error en FORK < \n");
+        _exit(-1);
+    }
+    return res;
+}
