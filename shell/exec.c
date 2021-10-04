@@ -65,8 +65,14 @@ static int
 open_redir_fd(char *file, int flags)
 {
 	// Your code here
+	int fd = open(file,flags,S_IWUSR | S_IRUSR);
 
-	return -1;
+	if( fd < 0 ){
+		printf_debug("Error creating fd");
+		_exit(-1);
+	}
+
+	return fd;
 }
 
 // executes a command - does not return
@@ -99,6 +105,7 @@ exec_cmd(struct cmd *cmd)
 		// runs a command in background
 		//
 		// Your code here
+		b = (struct execcmd *)cmd;
 		execvp( e->argv[0], e->argv);
 		printf_debug("Command not found\n");
 		_exit(-1);
@@ -113,7 +120,38 @@ exec_cmd(struct cmd *cmd)
 		// is greater than zero
 		//
 		// Your code here
-		printf("Redirections are not yet implemented\n");
+		r = (struct execcmd *)cmd;
+
+		// replace stdin
+		fflush(stdout);
+		if( strlen(r->in_file) > 0 ){
+			int fd = open_redir_fd( r->in_file, O_RDONLY );
+			dup2(fd,0);
+			close(fd);
+		}
+		fflush(stdout);
+
+		// replace stdout
+		if( strlen(r->out_file) > 0 ){
+			fflush(stdout);
+			int fd = open_redir_fd( r->out_file, O_WRONLY | O_CREAT );
+			dup2(fd,1);
+			fflush(stdout);
+			close(fd);
+		}
+		// replace stderr
+		if( strlen(r->err_file) > 0 ){
+			if( (r->err_file)[0] == '&' ){
+				dup2(1,2);
+			}else{
+				int fd = open_redir_fd( r->err_file, O_WRONLY | O_CREAT );
+				dup2(fd,2);
+				close(fd);
+			}	
+		}
+
+		execvp( r->argv[0], r->argv);
+		printf_debug("Command not found\n");
 		_exit(-1);
 		break;
 	}

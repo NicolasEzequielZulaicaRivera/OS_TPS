@@ -35,6 +35,22 @@ El proceso principal espera al proceso que ejecuta el comando con el flag `WNOHA
 
 ### Flujo estándar
 
+#### Investigar el significado de 2>&1, explicar cómo funciona su forma general y mostrar qué sucede con la salida de cat out.txt en el ejemplo. Luego repetirlo invertiendo el orden de las redirecciones. ¿Cambió algo?
+
+n>&m significa que redirija el fd n al fd m. Esto se puede conseguir haciendo `dup2(m,n)`
+
+```
+➜  ~ ls -c noExiste >f 2>&1
+➜  ~ cat f
+ls: cannot access 'noExiste': No such file or directory 
+➜  ~ ls -c noExiste 2>&1 >f
+ls: cannot access 'noExiste': No such file or directory
+➜  ~ cat f
+➜  ~    
+``` 
+
+Si cambiamos el orden redirije el stderr al stdout original ( antes de cambiarlo por un archivo ) y por eso podemos ver el error por consola.
+
 ---
 
 ### Tuberías simples (pipes)
