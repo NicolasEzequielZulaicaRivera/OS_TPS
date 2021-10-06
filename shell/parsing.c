@@ -103,6 +103,12 @@ expand_environ_var(char *arg)
 {
 	// Your code here
 	if( arg[0] == '$' ){
+		
+		if( arg[1] == '?' ){
+			sprintf( arg, "%d", status );
+			return arg;
+		}
+
 		char *envvar = getenv( arg+1 );
 
 		if( envvar == NULL ){
@@ -110,7 +116,7 @@ expand_environ_var(char *arg)
 			return arg;
 		}
 
-		arg = realloc(arg, sizeof(envvar));
+		arg = realloc(arg, sizeof(envvar)+1);
 		strcpy(arg,envvar); 
 	}
 

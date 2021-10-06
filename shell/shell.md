@@ -99,11 +99,62 @@ cat: noexiste: No such file or directory
 
 La shell implementada no guarda los exit codes de los procesos hijos y siempre hace `_exit(0)`.
 Por lo que el exit code sera siempre 0 (excepto que falle in fork).
-Mas alla de que no sea reportado ( la funcion printstatus omite los pipes ).
+
+```
+ (/home/nicozu) 
+$ cat noexiste
+cat: noexiste: No such file or directory
+       Program: [cat noexiste] exited, status: 1 
+
+ (/home/nicozu) 
+$ cat noexiste | echo hello
+hello
+cat: noexiste: No such file or directory
+       Program: [PIPE] exited, status: 0 
+
+ (/home/nicozu) 
+$ cat noexiste | cat noexiste                    
+cat: cat: noexistenoexiste: No such file or directory
+: No such file or directory
+       Program: [PIPE] exited, status: 0 
+
+ (/home/nicozu) 
+$ echo $? - $pipestatus
+0 - 
+       Program: [echo $? - $pipestatus] exited, status: 0 
+```
 
 ---
 
 ### Pseudo-variables
+
+#### Investigar al menos otras tres variables mágicas estándar, y describir su propósito. Incluir un ejemplo de su uso en bash (u otra terminal similar).
+
+** [Variables especiales de shell](https://tldp.org/LDP/abs/html/refcards.html) **
+- `$$` : PID del proceso (shell)
+```
+➜ echo $$
+1012
+```
+- `$0` : nombre del programa (shell)
+```
+➜ echo $0
+1012
+```
+- `$!` : PID del ultimo proceso corrido en segundo plano
+```
+➜ sleep 500 &
+[2] 12441
+
+➜ sleep 500 &
+[3] 12474
+
+➜ echo $!    
+12474
+
+➜ kill -9 $!
+[3]  + 12474 killed     sleep 500  
+```
 
 ---
 
