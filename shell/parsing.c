@@ -104,6 +104,12 @@ expand_environ_var(char *arg)
 	// Your code here
 	if( arg[0] == '$' ){
 		char *envvar = getenv( arg+1 );
+
+		if( envvar == NULL ){
+			strcpy(arg,"");
+			return arg;
+		}
+
 		arg = realloc(arg, sizeof(envvar));
 		strcpy(arg,envvar); 
 	}
