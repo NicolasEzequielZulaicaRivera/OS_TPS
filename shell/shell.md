@@ -39,7 +39,8 @@ En cambio, al pasar las variables de entorno por parametro se pierden las que no
 
 ##### Describir brevemente (sin implementar) una posible implementación para que el comportamiento sea el mismo.
 
-Podriamos precargar eargv (y eargc) con el entorno actual cada vez que se construye un cmd 
+Podriamos precargar eargv (y eargc) con el entorno actual cada vez que se construye un cmd.
+Luego, en vez de llamar a `set_environ_vars` podriamos utilizar `execvpe`.
 
 
 ---
@@ -76,9 +77,10 @@ Si cambiamos el orden redirije el stderr al stdout original ( antes de cambiarlo
 
 #### Investigar qué ocurre con el exit code reportado por la shell si se ejecuta un pipe ¿Cambia en algo? ¿Qué ocurre si, en un pipe, alguno de los comandos falla? Mostrar evidencia (e.g. salidas de terminal) de este comportamiento usando bash. Comparar con la implementación del este lab.
 
+**zsh:**
+
 La shell reporta el exit code del ultimo comando en un pipeline, se puede acceder a los exit codes de los procesos en el ultimo pipeline mediante la variable de entorno `$pipestatus`
 
-**zsh:**
 ```
 ➜  ~ cat noexiste ; echo $?
 cat: noexiste: No such file or directory
@@ -95,10 +97,9 @@ cat: noexiste: No such file or directory
 
 **fiuba shell:**
 
-[//]: # (TODO)
-
-- variables de entorno sin implementar
-- no se guarda el exit_satus de los sub procesos
+La shell implementada no guarda los exit codes de los procesos hijos y siempre hace `_exit(0)`.
+Por lo que el exit code sera siempre 0 (excepto que falle in fork).
+Mas alla de que no sea reportado ( la funcion printstatus omite los pipes ).
 
 ---
 
