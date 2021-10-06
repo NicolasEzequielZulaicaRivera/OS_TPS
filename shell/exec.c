@@ -49,6 +49,13 @@ static void
 set_environ_vars(char **eargv, int eargc)
 {
 	// Your code here
+	for( int i=0; i<eargc; i++ ){
+		char *name = malloc( sizeof(eargv[i]) ) ;
+		strcpy(name,eargv[i]);
+		char *value = split_line(name, '=');
+		setenv(name,value,0);
+		free(name);
+	}
 }
 
 // opens the file in which the stdin/stdout/stderr
@@ -96,7 +103,7 @@ exec_cmd(struct cmd *cmd)
 		//
 		// Your code here
 		e = (struct execcmd *)cmd;
-		//execvpe( e->argv[0], e->argv, e->eargv);
+		set_environ_vars( e->eargv, e->eargc );
 		execvp( e->argv[0], e->argv);
 		printf_debug("Command not found\n");
 		fflush(stdout);
@@ -108,10 +115,7 @@ exec_cmd(struct cmd *cmd)
 		// Your code here
 		b = (struct backcmd *)cmd;
 		e = (struct execcmd *)b->c;
-		execvp( e->argv[0], e->argv);
-		printf_debug("Command not found\n");
-		fflush(stdout);
-		_exit(-1);
+		exec_cmd(e);
 		break;
 	}
 
@@ -124,6 +128,7 @@ exec_cmd(struct cmd *cmd)
 		//
 		// Your code here
 		r = (struct execcmd *)cmd;
+		set_environ_vars( r->eargv, r->eargc );
 
 		// replace stdin
 		fflush(stdout);

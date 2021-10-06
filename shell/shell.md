@@ -21,7 +21,26 @@ Si. La implementacion llama a `_exit`, finalizando el proceso hijo si falla en e
 
 ---
 
-### Variables de entorno adicionales
+### Variables de entorno temporarias
+
+#### ¿Por qué es necesario hacerlo luego de la llamada a fork(2)?
+
+Esto es necesario para no cambiar el ambiente del proceso principal.
+
+Si lo hicieramos antes no serian variables temporarias, ya que el porceso principal guardaria la variable y esta se clonaria a cada proceso hijo al hacer fork.
+
+#### En algunos de los wrappers de la familia de funciones de exec(3) (las que finalizan con la letra e), se les puede pasar un tercer argumento (o una lista de argumentos dependiendo del caso), con nuevas variables de entorno para la ejecución de ese proceso. Supongamos, entonces, que en vez de utilizar setenv(3) por cada una de las variables, se guardan en un array y se lo coloca en el tercer argumento de una de las funciones de exec(3). 
+
+##### ¿El comportamiento resultante es el mismo que en el primer caso? Explicar qué sucede y por qué. 
+
+El comportamiento no es el mismo. 
+setenv agrega variables al ambiente (con la opcion de sobreescribir las que ya existan).
+En cambio, al pasar las variables de entorno por parametro se pierden las que no esten en el parametro. 
+
+##### Describir brevemente (sin implementar) una posible implementación para que el comportamiento sea el mismo.
+
+Podriamos precargar eargv (y eargc) con el entorno actual cada vez que se construye un cmd 
+
 
 ---
 
