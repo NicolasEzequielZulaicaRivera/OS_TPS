@@ -45,6 +45,7 @@ pipe_cmd_create(struct cmd *left, struct cmd *right)
 	p->type = PIPE;
 	p->leftcmd = left;
 	p->rightcmd = right;
+	strcpy(p->scmd, "PIPE");
 
 	return (struct cmd *) p;
 }

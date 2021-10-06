@@ -4,7 +4,7 @@
 void
 print_status_info(struct cmd *cmd)
 {
-	if (strlen(cmd->scmd) == 0 || cmd->type == PIPE)
+	if (strlen(cmd->scmd) == 0)
 		return;
 
 	if (WIFEXITED(status)) {
