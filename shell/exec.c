@@ -50,8 +50,7 @@ set_environ_vars(char **eargv, int eargc)
 {
 	// Your code here
 	for( int i=0; i<eargc; i++ ){
-		char *name = malloc( sizeof(eargv[i]) ) ;
-		strcpy(name,eargv[i]);
+		char *name = strdup( eargv[i] ) ;
 		char *value = split_line(name, '=');
 		setenv(name,value,0);
 		free(name);
