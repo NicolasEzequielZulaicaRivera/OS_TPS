@@ -11,6 +11,8 @@ split_line(char *buf, char splitter)
 	while (buf[i] != splitter && buf[i] != END_STRING)
 		i++;
 
+    if( buf[i] == END_STRING ) return &buf[i];
+
 	buf[i++] = END_STRING;
 
 	while (buf[i] == SPACE)

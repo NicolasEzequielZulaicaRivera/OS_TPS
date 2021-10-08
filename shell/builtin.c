@@ -8,7 +8,13 @@ int
 exit_shell(char *cmd)
 {
 	// Your code here
-
+	char * _cmd = strdup(cmd);
+	split_line(_cmd,' ');
+	if( !strcmp(_cmd,"exit") ){
+		free(_cmd);
+		return 1;
+	}
+	free(_cmd);
 	return 0;
 }
 
@@ -28,7 +34,22 @@ int
 cd(char *cmd)
 {
 	// Your code here
+	char * _cmd = strdup(cmd);
+	char * dir = split_line(_cmd,' ');
+	if( !strcmp(_cmd,"cd") ){
 
+		if( strlen(dir) == 0 ){
+			chdir( getenv("HOME") );
+		} else {
+			chdir(dir);
+		}
+
+		getcwd(promt, PRMTLEN);
+
+		free(_cmd);
+		return 1;
+	}
+	free(_cmd);
 	return 0;
 }
 
