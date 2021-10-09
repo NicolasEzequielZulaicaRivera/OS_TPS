@@ -43,8 +43,6 @@ cd(char *cmd)
 
 		while( _dir[0] == SPACE ) _dir ++;
 
-		chdir("Desktop/");
-
 		if( strlen(_dir) == 0 ){
 			chdir( getenv("HOME") );
 		} else {
