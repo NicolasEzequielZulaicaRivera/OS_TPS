@@ -13,23 +13,39 @@ read_line(const char *promt)
 #ifndef SHELL_NO_INTERACTIVE
 	fprintf(stdout, "%s %s %s\n", COLOR_RED, promt, COLOR_RESET);
 	fprintf(stdout, "%s", "$ ");
+	fflush(stdout);
 #endif
 
 	memset(buffer, 0, BUFLEN);
 
-	c = getchar();
+	while (1)
+    {
+      read (STDIN_FILENO, &c, 1);
 
-	while (c != END_LINE && c != EOF) {
-		buffer[i++] = c;
-		c = getchar();
-	}
-
-	// if the user press ctrl+D
-	// just exit normally
-	if (c == EOF)
-		return NULL;
-
-	buffer[i] = END_STRING;
-
-	return buffer;
+		switch (c)
+		{
+			case EOF: // END OF FILE
+			case 4: // EOF | CTRL+D
+				return NULL;
+			case 27: // ESC
+				// handle arrows
+				break;
+			case 127: // BACKSPACE
+				buffer[--i] = 0;
+				putchar_debug('\b'); putchar_debug(' '); putchar_debug('\b');
+				break;
+			case END_LINE:
+				buffer[i] = END_STRING;
+				putchar_debug(END_LINE);
+				return buffer;
+			default:
+				buffer[i++] = c;
+				putchar_debug(c);
+				break;
+		}
+#ifndef SHELL_NO_INTERACTIVE
+		fflush(stdout);
+#endif
+    }
+	return NULL;
 }

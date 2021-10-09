@@ -49,6 +49,14 @@ printf_debug(char* format, ...) {
     return 0;
 #endif
 }
+int
+putchar_debug(char c){
+#ifndef SHELL_NO_INTERACTIVE
+    return putchar(c);
+#else
+    return 0;
+#endif
+}
 
 int
 fprintf_debug(FILE* file, char* format, ...) {
