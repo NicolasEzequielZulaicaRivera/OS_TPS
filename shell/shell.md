@@ -19,6 +19,13 @@ Si. La implementacion llama a `_exit`, finalizando el proceso hijo si falla en e
 
 ### Comandos built-in
 
+#### ¿Entre cd y pwd, alguno de los dos se podría implementar sin necesidad de ser built-in? ¿Por qué? ¿Si la respuesta es sí, cuál es el motivo, entonces, de hacerlo como built-in? (para esta última pregunta pensar en los built-in como true y false)
+
+- `cd` : *No* (*), no hay ninguna (buena) manera de cambiar el directorio de trabajo de un proceso por fuera del proceso.
+> * Puede conseguirse [usando clone()](https://unix.stackexchange.com/questions/615096/why-a-change-of-dir-cant-be-made-in-a-separate-process) o [atando el llamado al proceso](https://unix.stackexchange.com/questions/281994/changing-the-current-working-directory-of-a-certain-process)
+>
+> Pero no es recomendado
+- `pwd` : *Si*, ya que un proceso hijo heredaria el working directory, las ventajas de hacerlo built-in son que es mas veloz y no es modificable (sin modificar la shell en si)
 ---
 
 ### Variables de entorno temporarias
