@@ -9,9 +9,10 @@ exit_shell(char *cmd)
 {
 	// Your code here
 	char * _cmd = strdup(cmd);
-	split_line(_cmd,' ');
+	split_line(_cmd,SPACE);
 	if( !strcmp(_cmd,"exit") ){
 		free(_cmd);
+		status = 0;
 		return 1;
 	}
 	free(_cmd);
@@ -35,16 +36,25 @@ cd(char *cmd)
 {
 	// Your code here
 	char * _cmd = strdup(cmd);
-	char * dir = split_line(_cmd,' ');
+	split_line(_cmd,SPACE);
+	char * _dir = _cmd + 3;
+
 	if( !strcmp(_cmd,"cd") ){
 
-		if( strlen(dir) == 0 ){
+		while( _dir[0] == SPACE ) _dir ++;
+
+		chdir("Desktop/");
+
+		if( strlen(_dir) == 0 ){
 			chdir( getenv("HOME") );
 		} else {
-			chdir(dir);
+			if( _dir[ strlen(_dir) ] != '/' ) {
+				_cmd = realloc( _cmd, sizeof(char) * ( strlen(cmd) + 2 ) );
+				strcat(_dir,"/");
+			}
+			if( chdir(_dir) ) status = -1;
+			else getcwd(promt, PRMTLEN);
 		}
-
-		getcwd(promt, PRMTLEN);
 
 		free(_cmd);
 		return 1;
@@ -62,6 +72,17 @@ int
 pwd(char *cmd)
 {
 	// Your code here
-
+	char * _cmd = strdup(cmd);
+	split_line(_cmd,SPACE);
+	if( !strcmp(_cmd,"pwd") ){
+		if( getcwd(promt, PRMTLEN) == NULL){
+			status = -1;
+		} else {
+			printf("%s",promt); // Not a debug_print
+			status = 0;
+		}
+		return 1;
+	}
+	free(_cmd);
 	return 0;
 }
