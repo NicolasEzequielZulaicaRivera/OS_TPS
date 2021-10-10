@@ -67,13 +67,14 @@ void handleEsc(int *i){
 		{
 		case 'A': // UP-ARROW
 			strcpy(buffer, hist_get_previous() );
-			printf("\33[2K\r%s", buffer);
 			break;
 		case 'B': // DOWN-ARROW
 			strcpy(buffer, hist_get_next() );
-			printf("\33[2K\r%s", buffer);
 			break;
+		default : return;
 		}
+		printf("\33[2K\r$ %s", buffer);
+		*i = strlen(buffer);
 	break;
 	}
 

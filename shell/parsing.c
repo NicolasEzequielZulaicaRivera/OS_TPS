@@ -1,4 +1,5 @@
 #include "parsing.h"
+#include "history.h"
 
 // parses an argument of the command stream input
 static char *
@@ -98,10 +99,14 @@ parse_environ_var(struct execcmd *c, char *arg)
 // - remember to check the size of variable's value
 //		It could be greater than the current size of 'arg'
 //		If that's the case, you should realloc 'arg' to the new size.
+// 
+// Changes :
+// This function also expands event designators
+// Thus it was renamed : expand_environ_var -> expand_token
 static char *
-expand_environ_var(char *arg)
+expand_token(char *arg)
 {
-	// Your code here
+	// Expand environ var
 	if( arg[0] == '$' ){
 		
 		if( arg[1] == '?' ){
@@ -118,8 +123,25 @@ expand_environ_var(char *arg)
 
 		arg = realloc(arg, sizeof(envvar)+1);
 		strcpy(arg,envvar); 
+		return arg;
 	}
 
+	// Expand Event Designators 
+	if( arg[0] == '!' ){
+		switch (arg[1])
+		{
+		case '!':
+			strcpy(arg, hist_get(2) );
+			break;
+		case '-':
+			strcpy(arg, hist_get( atoi(arg+2)+1 ) );
+			break;
+		default:
+			strcpy(arg,"");
+			break;
+		}
+		return arg;
+	}
 	return arg;
 }
 
@@ -149,7 +171,7 @@ parse_exec(char *buf_cmd)
 		if (parse_environ_var(c, tok))
 			continue;
 
-		tok = expand_environ_var(tok);
+		tok = expand_token(tok);
 
 		c->argv[argc++] = tok;
 	}

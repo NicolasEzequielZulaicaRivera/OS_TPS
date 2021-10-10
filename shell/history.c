@@ -78,6 +78,7 @@ void hist_push (char *str){
     if(!hist_file || !str) return;
     fprintf(hist_file,"%s\n", str);
     lista_apilar( history, strdup(str) );
+    current = 0;
     return;
 }
 
