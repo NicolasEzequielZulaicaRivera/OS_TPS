@@ -3,8 +3,12 @@
 #include <stdlib.h>
 #include <termios.h>
 #include "set_input_mode.h"
-// SRC : https://www.gnu.org/software/libc/manual/html_node/Noncanon-Example.html
+// FUENTE DEL CODIGO : 
+// https://www.gnu.org/software/libc/manual/html_node/Noncanon-Example.html
 
+// La funcion de este modulo es setear el modo de entrada como no canonico
+// De esta manera se pueden capturar los caracteres a medida que son ingresados por el usuario
+// Utilidad que emplearemos para detectar las flechas para navegar la historia
 
 /* Use this variable to remember original terminal attributes. */
 struct termios saved_attributes;
@@ -22,10 +26,10 @@ set_input_mode (void)
 
   /* Make sure stdin is a terminal. */
   if (!isatty (STDIN_FILENO))
-    {
-      fprintf (stderr, "Not a terminal.\n");
-      exit (EXIT_FAILURE);
-    }
+  {
+    fprintf (stderr, "Not a terminal.\n");
+    exit (EXIT_FAILURE);
+  }
 
   /* Save the terminal attributes so we can restore them later. */
   tcgetattr (STDIN_FILENO, &saved_attributes);

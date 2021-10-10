@@ -165,4 +165,15 @@ $ echo $? - $pipestatus
 
 ---
 
+### Desafio:
 
+#### ¿Cuál es la función de los parámetros MIN y TIME del modo no canónico? ¿Qué se logra en el ejemplo dado al establecer a MIN en 1 y a TIME en 0?
+
+- `MIN` : indica la cantidad minima de bytes necesarios para que `read` retorne.
+- `TIME` : indica cuanto tiempo debe esperar para retornar.
+
+En el ejemplo, como `TIME == 0` la funcion `read` no necesita esperar, retorna tan pronto como encuentre 1 byte.
+
+[source](https://www.gnu.org/software/libc/manual/html_node/Noncanonical-Input.html)
+
+---

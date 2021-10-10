@@ -87,10 +87,11 @@ pwd(char *cmd)
 	return 0;
 }
 
+// Implemento `history` como un comando built-in
+// Este debe ser asi ya que sera la shell la que actualize la historia cada vez que se ejecute un comando
 int
 history(char *cmd)
 {
-	// Your code here
 	char * _cmd = strdup(cmd);
 	split_line(_cmd,SPACE);
 

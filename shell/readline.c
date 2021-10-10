@@ -66,10 +66,12 @@ void handleEsc(int *i){
 		switch (c)
 		{
 		case 'A': // UP-ARROW
-			/* code */
+			strcpy(buffer, hist_get_previous() );
+			printf("\33[2K\r%s", buffer);
 			break;
 		case 'B': // DOWN-ARROW
-			/* code */
+			strcpy(buffer, hist_get_next() );
+			printf("\33[2K\r%s", buffer);
 			break;
 		}
 	break;
