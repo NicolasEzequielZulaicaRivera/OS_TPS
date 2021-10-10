@@ -8,7 +8,7 @@ ifdef SHELL_TEST
 endif
 
 EXEC := sh
-SRCS := $(wildcard *.c)
+SRCS := $(wildcard *.c) $(wildcard */*.c)
 OBJS := $(SRCS:%.c=%.o)
 
 all: $(EXEC)
