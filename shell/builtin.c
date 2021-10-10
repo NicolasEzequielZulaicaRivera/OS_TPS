@@ -77,7 +77,7 @@ pwd(char *cmd)
 		if( getcwd(promt, PRMTLEN) == NULL){
 			status = -1;
 		} else {
-			printf("%s",promt); // Not a debug_print
+			printf("%s\n",promt); // Not a debug_print
 			status = 0;
 		}
 		return 1;
