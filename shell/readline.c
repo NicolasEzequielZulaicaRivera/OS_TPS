@@ -1,24 +1,25 @@
 #include "defs.h"
 #include "readline.h"
 #include "history.h"
+#include "utils.h"
 #include <sys/ioctl.h>
 
 static char buffer[BUFLEN];
 
 // Handle character that start w/ escape code
 // Might change buffer ( and thus i )
-void handleEsc( int *i, ssize_t *row, ssize_t *col, int MAX_COL );
+void handleEsc( int *i, size_t *row, size_t *col, int MAX_COL );
 
 // Handle backspace (delete char)
-void handleBackspace( int *i, ssize_t *row, ssize_t *col, int MAX_COL );
+void handleBackspace( int *i, size_t *row, size_t *col, int MAX_COL );
 
 // Writes character/word to terminal
 // by controling how characters are written,
 // problems when exceding width can be controled
-void writeChar( char c, ssize_t *row, ssize_t *col, int MAX_COL );
-void writeWord( char *str, ssize_t *row, ssize_t *col, int MAX_COL );
+void writeChar( char c, size_t *row, size_t *col, int MAX_COL );
+void writeWord( char *str, size_t *row, size_t *col, int MAX_COL );
 
-void clearLine( ssize_t *row, ssize_t *col, int MAX_COL );
+void clearLine( size_t *row, size_t *col );
 
 // reads a line from the standard input
 // and prints the prompt
@@ -29,7 +30,7 @@ read_line(const char *promt)
 
 	// Track last char col & row 
 	// Thus control placement on char input
-	ssize_t col = 0, row = 0;
+	size_t col = 0, row = 0;
 
 	// Set terminal max columns
 	struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w); // Load winsize obj
@@ -76,7 +77,7 @@ read_line(const char *promt)
 	return NULL;
 }
 
-void handleEsc(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
+void handleEsc(int *i, size_t *row, size_t *col, int MAX_COL){
 	int c = 0;
 	read (STDIN_FILENO, &c, 1);
 	switch (c)
@@ -93,7 +94,7 @@ void handleEsc(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
 			break;
 		default : return;
 		}
-		clearLine(row,col,MAX_COL);
+		clearLine(row,col);
 		writeWord(buffer,row,col,MAX_COL);
 		*i = strlen(buffer);
 	break;
@@ -101,7 +102,7 @@ void handleEsc(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
 
 }
 
-void handleBackspace(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
+void handleBackspace(int *i, size_t *row, size_t *col, int MAX_COL){
 	if ( *i <= 0 ) return;
 	
 	buffer[--(*i)] = 0;
@@ -115,19 +116,19 @@ void handleBackspace(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
 	printf_debug("\b \b");
 }
 
-void writeChar( char c, ssize_t *row, ssize_t *col, int MAX_COL ){
+void writeChar( char c, size_t *row, size_t *col, int MAX_COL ){
 	putchar_debug(c);
-	if( ++(*col) >= MAX_COL ){
+	if( ++(*col) >= (size_t)MAX_COL ){
 		printf_debug("\n> "); 	// artificial breakline in terminal 
 		*col = 0; 				// to keep strict track of char placement
 		(*row) ++;
 	}
 }
-void writeWord( char *str, ssize_t *row, ssize_t *col, int MAX_COL ){
-	for( ssize_t i = 0; i < strlen(str); i++ ) 	// words are written char by char
+void writeWord( char *str, size_t *row, size_t *col, int MAX_COL ){
+	for( size_t i = 0; i < strlen(str); i++ ) 	// words are written char by char
 		writeChar( str[i] , row, col, MAX_COL );// to control placement
 }
-void clearLine( ssize_t *row, ssize_t *col, int MAX_COL ){
+void clearLine( size_t *row, size_t *col ){
 	*col = 0;
 	while( *row > 0 ){	// deleting all rows of multiline command
 		(*row) --;		// is easy as rows are tracked
