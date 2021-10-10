@@ -5,7 +5,7 @@ char hist_promt[PRMTLEN] = { 0 };
 static char hist_f_dir[PRMTLEN] = { 0 };
 static FILE * hist_file = NULL;
 
-int history_cmd(){
+int history_cmd(int n){
     if(!hist_file) return -1;
     fclose(hist_file);
 
@@ -17,9 +17,23 @@ int history_cmd(){
 
     char *line;
     size_t len = 0;
-    while ( getline(&line, &len, hist_file) != -1 ) {
-        printf("%s", line);
+
+    if( n != 0 ){
+        int lines_count = 0;
+        while ( getline(&line, &len, hist_file) != -1 ) 
+            lines_count++;
+
+        fseek(hist_file, 0, SEEK_SET);
+
+        if( lines_count > n )
+            for( int i=0; i<n; i++ ) 
+                getline(&line, &len, hist_file);
+        
     }
+
+    while ( getline(&line, &len, hist_file) != -1 )
+        printf("%s", line);
+
     fclose(hist_file);
     hist_file = fopen( hist_f_dir, "a" );
     return 0;

@@ -92,8 +92,10 @@ history(char *cmd)
 	// Your code here
 	char * _cmd = strdup(cmd);
 	split_line(_cmd,SPACE);
+
 	if( !strcmp(_cmd,"history") ){
-		status = history_cmd();
+		int n = atoi(_cmd+8);
+		status = history_cmd(n);
 		return 1;
 	}
 	free(_cmd);

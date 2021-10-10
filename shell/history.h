@@ -5,7 +5,7 @@
 
 void init_history();
 
-int history_cmd();
+int history_cmd(int n);
 
 char * hist_get_previous ();
 char * hist_get_next ();
