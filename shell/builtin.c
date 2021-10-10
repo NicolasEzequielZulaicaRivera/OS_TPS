@@ -1,4 +1,5 @@
 #include "builtin.h"
+#include "history.h"
 
 // returns true if the 'exit' call
 // should be performed
@@ -79,6 +80,20 @@ pwd(char *cmd)
 			printf("%s",promt); // Not a debug_print
 			status = 0;
 		}
+		return 1;
+	}
+	free(_cmd);
+	return 0;
+}
+
+int
+history(char *cmd)
+{
+	// Your code here
+	char * _cmd = strdup(cmd);
+	split_line(_cmd,SPACE);
+	if( !strcmp(_cmd,"history") ){
+		status = history_cmd();
 		return 1;
 	}
 	free(_cmd);

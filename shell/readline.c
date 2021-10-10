@@ -1,5 +1,6 @@
 #include "defs.h"
 #include "readline.h"
+#include "history.h"
 
 static char buffer[BUFLEN];
 
@@ -41,6 +42,7 @@ read_line(const char *promt)
 		case END_LINE:
 			buffer[i] = END_STRING;
 			putchar_debug(END_LINE);
+			hist_push(buffer);
 			return buffer;
 		default:
 			buffer[i++] = c;

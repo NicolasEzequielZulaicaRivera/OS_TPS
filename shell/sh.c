@@ -3,6 +3,7 @@
 #include "readline.h"
 #include "runcmd.h"
 #include "set_input_mode.h"
+#include "history.h"
 
 char promt[PRMTLEN] = { 0 };
 
@@ -32,6 +33,7 @@ init_shell()
 	} else {
 		snprintf(promt, sizeof promt, "(%s)", home);
 	}
+	init_history ();
 }
 
 int
