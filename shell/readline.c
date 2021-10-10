@@ -9,6 +9,7 @@ static char buffer[BUFLEN];
 // Might change buffer ( and thus i )
 void handleEsc( int *i, ssize_t *row, ssize_t *col, int MAX_COL );
 
+// Handle backspace (delete char)
 void handleBackspace( int *i, ssize_t *row, ssize_t *col, int MAX_COL );
 
 // Writes character/word to terminal
@@ -25,11 +26,15 @@ char *
 read_line(const char *promt)
 {
 	int i = 0, c = 0;
+
+	// Track last char col & row 
+	// Thus control placement on char input
 	ssize_t col = 0, row = 0;
 
-	struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	int MAX_COL = w.ws_col-1;
-	if( !MAX_COL || MAX_COL<1 ) MAX_COL = 50;
+	// Set terminal max columns
+	struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w); // Load winsize obj
+	int MAX_COL = w.ws_col-1; // Get width
+	if( !MAX_COL || MAX_COL<1 ) MAX_COL = 50; // Fallback
 
 #ifndef SHELL_NO_INTERACTIVE
 	fprintf(stdout, "%s %s %s\n", COLOR_RED, promt, COLOR_RESET);
@@ -54,12 +59,12 @@ read_line(const char *promt)
 		case 127: // BACKSPACE
 			handleBackspace(&i,&row,&col,MAX_COL);
 			break;
-		case END_LINE:
+		case END_LINE: // END LINE
 			buffer[i] = END_STRING;
 			putchar_debug(END_LINE);
 			hist_push(buffer);
 			return buffer;
-		default:
+		default: // NORMAL CHAR
 			buffer[i++] = c;
 			writeChar(c, &row, &col, MAX_COL);
 			break;
@@ -101,10 +106,10 @@ void handleBackspace(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
 	
 	buffer[--(*i)] = 0;
 
-	if( (*col)-- == 0 ){
-		(*row)--;
+	if( (*col)-- == 0 ){	// DELETING INTO PREVIOUS LINE
+		(*row)--;					// adjust row/col tracking
 		(*col)=MAX_COL-1;
-		printf_debug("\b \b\b \b");
+		printf_debug("\b \b\b \b"); //delete line & jump to prevline
 		printf_debug("\b \b\b \b\033[A\033[%iC",MAX_COL+2);
 	}
 	printf_debug("\b \b");
@@ -113,19 +118,19 @@ void handleBackspace(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
 void writeChar( char c, ssize_t *row, ssize_t *col, int MAX_COL ){
 	putchar_debug(c);
 	if( ++(*col) >= MAX_COL ){
-		printf_debug("\n> ");
-		*col = 0; 
+		printf_debug("\n> "); 	// artificial breakline in terminal 
+		*col = 0; 				// to keep strict track of char placement
 		(*row) ++;
 	}
 }
 void writeWord( char *str, ssize_t *row, ssize_t *col, int MAX_COL ){
-	for( ssize_t i = 0; i < strlen(str); i++ )
-		writeChar( str[i] , row, col, MAX_COL );
+	for( ssize_t i = 0; i < strlen(str); i++ ) 	// words are written char by char
+		writeChar( str[i] , row, col, MAX_COL );// to control placement
 }
 void clearLine( ssize_t *row, ssize_t *col, int MAX_COL ){
 	*col = 0;
-	while( *row > 0 ){ 
-		(*row) --;
+	while( *row > 0 ){	// deleting all rows of multiline command
+		(*row) --;		// is easy as rows are tracked
 		printf_debug("\33[2K\r\033[A");
 	};
 	printf_debug("\33[2K\r$ ");
