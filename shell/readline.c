@@ -1,12 +1,23 @@
 #include "defs.h"
 #include "readline.h"
 #include "history.h"
+#include <sys/ioctl.h>
 
 static char buffer[BUFLEN];
 
 // Handle character that start w/ escape code
 // Might change buffer ( and thus i )
-void handleEsc(int *i);
+void handleEsc( int *i, ssize_t *row, ssize_t *col, int MAX_COL );
+
+void handleBackspace( int *i, ssize_t *row, ssize_t *col, int MAX_COL );
+
+// Writes character/word to terminal
+// by controling how characters are written,
+// problems when exceding width can be controled
+void writeChar( char c, ssize_t *row, ssize_t *col, int MAX_COL );
+void writeWord( char *str, ssize_t *row, ssize_t *col, int MAX_COL );
+
+void clearLine( ssize_t *row, ssize_t *col, int MAX_COL );
 
 // reads a line from the standard input
 // and prints the prompt
@@ -14,7 +25,11 @@ char *
 read_line(const char *promt)
 {
 	int i = 0, c = 0;
-	// ssize_t col = 0, row = 0;
+	ssize_t col = 0, row = 0;
+
+	struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	int MAX_COL = w.ws_col-1;
+	if( !MAX_COL || MAX_COL<1 ) MAX_COL = 50;
 
 #ifndef SHELL_NO_INTERACTIVE
 	fprintf(stdout, "%s %s %s\n", COLOR_RED, promt, COLOR_RESET);
@@ -27,12 +42,6 @@ read_line(const char *promt)
 	while (1)
     {
 		read (STDIN_FILENO, &c, 1);
-		/*if( c!=127 && ++col>=50 ){
-			putchar_debug('\n');
-			putchar_debug('>');
-			putchar_debug(' ');
-			col = 0; row ++;
-		}*/
 
 		switch (c)
 		{
@@ -40,21 +49,10 @@ read_line(const char *promt)
 		case 4: // EOF | CTRL+D
 			return NULL;
 		case 27: // ESC
-			handleEsc(&i);
+			handleEsc(&i,&row,&col,MAX_COL);
 			break;
 		case 127: // BACKSPACE
-			buffer[--i] = 0;
-			putchar_debug('\b'); putchar_debug(' '); putchar_debug('\b');
-			/*if( --col < 0 ){
-				if(!row){
-					col = 0;
-					break;
-				}
-				row--;
-				col = 50;
-				printf("\033[A\033[50C");
-				break;
-			}*/
+			handleBackspace(&i,&row,&col,MAX_COL);
 			break;
 		case END_LINE:
 			buffer[i] = END_STRING;
@@ -63,7 +61,7 @@ read_line(const char *promt)
 			return buffer;
 		default:
 			buffer[i++] = c;
-			putchar_debug(c);
+			writeChar(c, &row, &col, MAX_COL);
 			break;
 		}
 #ifndef SHELL_NO_INTERACTIVE
@@ -73,7 +71,7 @@ read_line(const char *promt)
 	return NULL;
 }
 
-void handleEsc(int *i){
+void handleEsc(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
 	int c = 0;
 	read (STDIN_FILENO, &c, 1);
 	switch (c)
@@ -90,9 +88,45 @@ void handleEsc(int *i){
 			break;
 		default : return;
 		}
-		printf("\33[2K\r$ %s", buffer);
+		clearLine(row,col,MAX_COL);
+		writeWord(buffer,row,col,MAX_COL);
 		*i = strlen(buffer);
 	break;
 	}
 
+}
+
+void handleBackspace(int *i, ssize_t *row, ssize_t *col, int MAX_COL){
+	if ( *i <= 0 ) return;
+	
+	buffer[--(*i)] = 0;
+
+	if( (*col)-- == 0 ){
+		(*row)--;
+		(*col)=MAX_COL-1;
+		printf_debug("\b \b\b \b");
+		printf_debug("\b \b\b \b\033[A\033[%iC",MAX_COL+2);
+	}
+	printf_debug("\b \b");
+}
+
+void writeChar( char c, ssize_t *row, ssize_t *col, int MAX_COL ){
+	putchar_debug(c);
+	if( ++(*col) >= MAX_COL ){
+		printf_debug("\n> ");
+		*col = 0; 
+		(*row) ++;
+	}
+}
+void writeWord( char *str, ssize_t *row, ssize_t *col, int MAX_COL ){
+	for( ssize_t i = 0; i < strlen(str); i++ )
+		writeChar( str[i] , row, col, MAX_COL );
+}
+void clearLine( ssize_t *row, ssize_t *col, int MAX_COL ){
+	*col = 0;
+	while( *row > 0 ){ 
+		(*row) --;
+		printf_debug("\33[2K\r\033[A");
+	};
+	printf_debug("\33[2K\r$ ");
 }

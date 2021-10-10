@@ -49,6 +49,7 @@ void init_history() {
 
 char * hist_get_previous () {
     if(!hist_file) return EMPTY_STR;
+    if(!history->cantidad) return EMPTY_STR;
 
     current ++;
     if( current > history->cantidad )
@@ -58,6 +59,7 @@ char * hist_get_previous () {
 }
 char * hist_get_next (){
     if(!hist_file) return EMPTY_STR;
+    if(!history->cantidad) return EMPTY_STR;
 
     if( current <= 1 ){
         current = 0;
@@ -68,6 +70,7 @@ char * hist_get_next (){
 }
 char * hist_get (int n){
     if(!hist_file) return EMPTY_STR;
+    if(!history->cantidad) return EMPTY_STR;
 
     if( n<1 ) n=1;
     if( current > history->cantidad ) current = history->cantidad;
