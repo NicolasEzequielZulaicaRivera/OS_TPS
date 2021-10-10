@@ -34,8 +34,9 @@ read_line(const char *promt)
 
 	// Set terminal max columns
 	struct winsize w; ioctl(STDOUT_FILENO, TIOCGWINSZ, &w); // Load winsize obj
-	int MAX_COL = w.ws_col-1; // Get width
+	int MAX_COL = w.ws_col-3; // Get width - 3 char of leeway ( locally tested to be ok )
 	if( !MAX_COL || MAX_COL<1 ) MAX_COL = 50; // Fallback
+	// Can break if terminal is resized ( or other unforseen circumstances )
 
 #ifndef SHELL_NO_INTERACTIVE
 	fprintf(stdout, "%s %s %s\n", COLOR_RED, promt, COLOR_RESET);
