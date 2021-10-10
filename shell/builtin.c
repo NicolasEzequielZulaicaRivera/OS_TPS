@@ -45,6 +45,7 @@ cd(char *cmd)
 
 		if( strlen(_dir) == 0 ){
 			chdir( getenv("HOME") );
+			getcwd(promt, PRMTLEN);
 		} else {
 			if( _dir[ strlen(_dir) ] != '/' ) {
 				_cmd = realloc( _cmd, sizeof(char) * ( strlen(cmd) + 2 ) );
